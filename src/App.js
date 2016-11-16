@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 // import whiteWatch from "./white.png";
 import blackWatch from "./black.png";
+
+import "normalize.css";
 import "./App.css";
 
 class App extends Component {
@@ -75,6 +77,10 @@ class App extends Component {
     }
   }
 
+  selectFile(event) {
+    this.updateCanvas(event.target.files[0]);
+  }
+
   mountFileDrop() {
     var appEl = this.refs.app;
     appEl.ondrop = this.drop.bind(this);
@@ -85,12 +91,12 @@ class App extends Component {
   render() {
     return (
       <div ref="app" className="app">
-        <div className="app-header">
-          <h1>Watch Frame</h1>
-        </div>
-        <p className="app-content">
+        <div className="app-content">
           <canvas ref="canvas" width={1024} height={1024}/>
-        </p>
+          <input  onChange={this.selectFile.bind(this)}
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.gif" />
+        </div>
       </div>
     );
   }
