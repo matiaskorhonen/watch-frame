@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "react": "^15.4.0",
-    "react-canvas": "^1.2.1",
     "react-dom": "^15.4.0"
   },
   "scripts": {
