@@ -36,11 +36,7 @@ class App extends Component {
       var screenshot = new Image();
       screenshot.onload = function() {
         ctx.drawImage(screenshot, 374, 339, 276, 345);
-        let url = this.refs.canvas.toDataURL("image/png");
-        this.setState({
-          downloadHref: url
-        });
-      }.bind(this)
+      }
       screenshot.src = URL.createObjectURL(this.state.file);
     }
   }
@@ -154,6 +150,12 @@ class App extends Component {
     this.setState({ showOverlay: false });
   }
 
+  downloadImage(event) {
+    console.log(event);
+    let url = this.refs.canvas.toDataURL("image/png");
+    event.target.setAttribute("href", url);
+  }
+
   render() {
     return (
       <div ref="app" className="app">
@@ -169,7 +171,7 @@ class App extends Component {
           <canvas ref="canvas" width={1024} height={1024} />
 
           <div className="download">
-            { this.state.downloadHref ? <AnchorButton href={this.state.downloadHref} text="Download" download="watch.png" iconName="download" className="pt-intent-success pt-large" /> : null}
+            { this.state.file ? <AnchorButton onClick={this.downloadImage.bind(this)} text="Download" download="watch.png" iconName="download" className="pt-intent-success pt-large" /> : null}
           </div>
 
           <label className="pt-file-upload">
