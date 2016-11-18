@@ -1,5 +1,11 @@
+body, html, .app {
+  height: 100%
+}
+
 .app {
+  padding-top: 1em;
   text-align: center;
+  z-index: 100;
 }
 
 .app-content {
@@ -11,4 +17,33 @@
   max-width: 100%;
   margin: 0 auto;
   display: block;
+}
+
+.band-selection {
+  width: 256px;
+  max-width: 100%;
+  margin: 0 auto;
+  display: block;
+}
+
+.app-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.app-overlay p {
+  margin-top: 10%;
+
+  font-size: 2em;
+  font-weight: bold;
+  color: #fff;
+}
+
+.hidden {
+  display: none;
 }

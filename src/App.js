@@ -1,35 +1,67 @@
 import React, { Component } from "react";
-// import whiteWatch from "./white.png";
+import { Radio, RadioGroup } from "@blueprintjs/core";
+
+import whiteWatch from "./white.png";
 import blackWatch from "./black.png";
 
 import "normalize.css";
+import "@blueprintjs/core/dist/blueprint.css";
 import "./App.css";
 
+
 class App extends Component {
+  constructor () {
+    super()
+    this.state = {
+      colour: "black",
+      file: undefined,
+      showOverlay: false
+    }
+  }
+
   componentDidMount() {
     this.updateCanvas();
     this.mountFileDrop();
   }
 
-  updateCanvas(file) {
-    const ctx = this.refs.canvas.getContext('2d');
-    var baseImage = new Image();
-    baseImage.onload = function() {
-      ctx.drawImage(baseImage, 0, 0);
-    }
-    baseImage.src = blackWatch;
+  componentDidUpdate() {
+    this.updateCanvas();
+  }
 
-    if (file) {
+  drawScreen(ctx) {
+    if (this.state.file) {
       var screenshot = new Image();
       screenshot.onload = function() {
         ctx.drawImage(screenshot, 374, 339, 276, 345);
       }
-      screenshot.src = URL.createObjectURL(file);
+      screenshot.src = URL.createObjectURL(this.state.file);
+    }
+  }
+
+  updateCanvas() {
+    const ctx = this.refs.canvas.getContext('2d');
+    let baseImage = new Image();
+
+    baseImage.onload = function() {
+      ctx.drawImage(baseImage, 0, 0);
+      this.drawScreen(ctx);
+    }.bind(this)
+
+    switch (this.state.colour) {
+      case "black":
+        baseImage.src = blackWatch;
+        break;
+      case "white":
+        baseImage.src = whiteWatch;
+        break;
+      default:
+        console.error(`Unknown colour: ${this.state.colour}`)
     }
   }
 
   drop(event) {
     event.preventDefault();
+    this.hideOverlay();
 
     var i, files = [];
 
@@ -54,15 +86,17 @@ class App extends Component {
       return imageRe.test(file.name);
     });
 
-    this.updateCanvas(imageFiles[0]);
+    this.setState({ file: imageFiles[0] })
   }
 
   dragover(event) {
     event.preventDefault();
+    this.showOverlay();
   }
 
   dragend(event) {
     event.preventDefault();
+    this.hideOverlay();
 
     // Remove all of the drag data
     const dt = event.dataTransfer;
@@ -77,25 +111,60 @@ class App extends Component {
     }
   }
 
+  dragleave(event) {
+    if (!event.clientX && !event.clientY) {
+      this.hideOverlay();
+    }
+  }
+
   selectFile(event) {
-    this.updateCanvas(event.target.files[0]);
+    this.setState({file: event.target.files[0]})
   }
 
   mountFileDrop() {
     var appEl = this.refs.app;
     appEl.ondrop = this.drop.bind(this);
-    appEl.ondragover = this.dragover;
-    appEl.ondragend = this.dragend;
+    appEl.ondragover = this.dragover.bind(this);
+    appEl.ondragend = this.dragend.bind(this);
+    appEl.ondragleave = this.dragleave.bind(this);
+  }
+
+  handleColourChange(event) {
+    this.setState({ colour: event.target.value });
+    this.updateCanvas();
+  }
+
+  showOverlay() {
+    this.setState({ showOverlay: true });
+  }
+
+  hideOverlay() {
+    this.setState({ showOverlay: false });
   }
 
   render() {
     return (
       <div ref="app" className="app">
         <div className="app-content">
-          <canvas ref="canvas" width={1024} height={1024}/>
-          <input  onChange={this.selectFile.bind(this)}
-                  type="file"
-                  accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.gif" />
+          <div className="band-selection">
+            <RadioGroup onChange={this.handleColourChange.bind(this)}
+                        selectedValue={this.state.colour}>
+                <Radio label="Black band" value="black" />
+                <Radio label="White band" value="white" />
+            </RadioGroup>
+          </div>
+
+          <canvas ref="canvas" width={1024} height={1024} />
+
+          <label className="pt-file-upload">
+            <input  onChange={this.selectFile.bind(this)}
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.gif" />
+            <span className="pt-file-upload-input">{this.state.file ? this.state.file.name : "Choose file…"}</span>
+          </label>
+        </div>
+        <div ref="overlay" className={this.state.showOverlay ? "app-overlay" : "app-overlay hidden"}>
+          <p>Drop a screenshot here…</p>
         </div>
       </div>
     );
