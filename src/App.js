@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Radio, RadioGroup } from "@blueprintjs/core";
+import { AnchorButton, Radio, RadioGroup } from "@blueprintjs/core";
 
 import whiteWatch from "./white.png";
 import blackWatch from "./black.png";
@@ -15,7 +15,8 @@ class App extends Component {
     this.state = {
       colour: "black",
       file: undefined,
-      showOverlay: false
+      showOverlay: false,
+      downloadHref: null
     }
   }
 
@@ -28,12 +29,18 @@ class App extends Component {
     this.updateCanvas();
   }
 
-  drawScreen(ctx) {
+  drawScreen() {
+    const ctx = this.refs.canvas.getContext('2d');
+
     if (this.state.file) {
       var screenshot = new Image();
       screenshot.onload = function() {
         ctx.drawImage(screenshot, 374, 339, 276, 345);
-      }
+        let url = this.refs.canvas.toDataURL("image/png");
+        this.setState({
+          downloadHref: url
+        });
+      }.bind(this)
       screenshot.src = URL.createObjectURL(this.state.file);
     }
   }
@@ -43,8 +50,9 @@ class App extends Component {
     let baseImage = new Image();
 
     baseImage.onload = function() {
+      ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
       ctx.drawImage(baseImage, 0, 0);
-      this.drawScreen(ctx);
+      this.drawScreen();
     }.bind(this)
 
     switch (this.state.colour) {
@@ -159,6 +167,10 @@ class App extends Component {
           </div>
 
           <canvas ref="canvas" width={1024} height={1024} />
+
+          <div className="download">
+            { this.state.downloadHref ? <AnchorButton href={this.state.downloadHref} text="Download" download="watch.png" iconName="download" className="pt-intent-success pt-large" /> : null}
+          </div>
 
           <label className="pt-file-upload">
             <input  onChange={this.selectFile.bind(this)}

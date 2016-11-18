@@ -26,6 +26,10 @@ body, html, .app {
   display: block;
 }
 
+.download a {
+  margin-bottom: 2em;
+}
+
 .pt-file-upload {
   max-width: 90%;
 }
