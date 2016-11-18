@@ -86,7 +86,9 @@ class App extends Component {
       return imageRe.test(file.name);
     });
 
-    this.setState({ file: imageFiles[0] })
+    if (imageFiles.length) {
+      this.setState({ file: imageFiles[0] })
+    }
   }
 
   dragover(event) {
@@ -96,7 +98,9 @@ class App extends Component {
 
   dragend(event) {
     event.preventDefault();
-    this.hideOverlay();
+    if (!event.clientX && !event.clientY) {
+      this.hideOverlay();
+    }
 
     // Remove all of the drag data
     const dt = event.dataTransfer;

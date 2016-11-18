@@ -3,7 +3,7 @@ body, html, .app {
 }
 
 .app {
-  padding-top: 1em;
+  padding-top: 2em;
   text-align: center;
   z-index: 100;
 }
