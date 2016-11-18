@@ -26,6 +26,10 @@ body, html, .app {
   display: block;
 }
 
+.pt-file-upload {
+  max-width: 90%;
+}
+
 .app-overlay {
   position: absolute;
   top: 0;
