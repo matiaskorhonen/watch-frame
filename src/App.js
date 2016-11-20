@@ -14,7 +14,9 @@ class App extends Component {
       colour: "black",
       file: undefined,
       showOverlay: false,
-      downloadHref: null
+      downloadHref: null,
+      blackWatchImage: new Image(),
+      whiteWatchImage: new Image()
     }
   }
 
@@ -39,6 +41,18 @@ class App extends Component {
     }
   }
 
+  drawBackground(image, src) {
+    const ctx = this.refs.canvas.getContext('2d');
+
+    image.onload = function() {
+      ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+      ctx.drawImage(image, 0, 0);
+      this.drawScreen();
+    }.bind(this)
+
+    image.src = src;
+  }
+
   updateCanvas() {
     const ctx = this.refs.canvas.getContext('2d');
     let baseImage = new Image();
@@ -51,10 +65,10 @@ class App extends Component {
 
     switch (this.state.colour) {
       case "black":
-        baseImage.src = blackWatch;
+        this.drawBackground(this.state.blackWatchImage, blackWatch)
         break;
       case "white":
-        baseImage.src = whiteWatch;
+        this.drawBackground(this.state.whiteWatchImage, whiteWatch)
         break;
       default:
         console.error(`Unknown colour: ${this.state.colour}`)
@@ -154,6 +168,13 @@ class App extends Component {
     event.target.setAttribute("href", url);
   }
 
+  middleTruncate(str) {
+    if (str.length > 17) {
+      return `${str.substr(0, 10).trim()}…${str.substr(str.length-5, str.length)}`;
+    }
+    return str;
+  }
+
   render() {
     return (
       <div ref="app" className="app">
@@ -169,14 +190,14 @@ class App extends Component {
           <canvas ref="canvas" width={1024} height={1024} />
 
           <div className="download">
-            { this.state.file ? <AnchorButton onClick={this.downloadImage.bind(this)} text="Download" download="watch.png" iconName="download" className="pt-intent-success pt-large" /> : null}
+            { this.state.file ? <AnchorButton onClick={this.downloadImage.bind(this)} text="Download" download={`${this.state.colour}-watch.png`} iconName="download" className="pt-intent-success pt-large" /> : null}
           </div>
 
           <label className="pt-file-upload">
             <input  onChange={this.selectFile.bind(this)}
                     type="file"
-                    accept=".jpg,.jpeg,.png,.tif,.tiff,.bmp,.gif" />
-            <span className="pt-file-upload-input">{this.state.file ? this.state.file.name : "Choose file…"}</span>
+                    accept="image/*" />
+            <span className="pt-file-upload-input">{this.state.file ? this.middleTruncate(this.state.file.name) : "Choose file…"}</span>
           </label>
         </div>
         <div ref="overlay" className={this.state.showOverlay ? "app-overlay" : "app-overlay hidden"}>
