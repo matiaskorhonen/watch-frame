@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import SmallPrint from "./SmallPrint.js";
 import { AnchorButton, Radio, RadioGroup } from "@blueprintjs/core";
 
 import whiteWatch from "./white.png";
@@ -200,9 +201,12 @@ class App extends Component {
             <span className="pt-file-upload-input">{this.state.file ? this.middleTruncate(this.state.file.name) : "Choose file…"}</span>
           </label>
         </div>
+
         <div ref="overlay" className={this.state.showOverlay ? "app-overlay" : "app-overlay hidden"}>
           <p>Drop a screenshot here…</p>
         </div>
+
+        <SmallPrint />
       </div>
     );
   }
