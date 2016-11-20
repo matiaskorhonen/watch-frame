@@ -2,6 +2,7 @@
   "name": "watch-frame",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://watch.matias.li",
   "devDependencies": {
     "react-scripts": "0.7.0"
   },
