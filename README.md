@@ -4,6 +4,8 @@
 
 A simple React app to render Apple Watch screenshots framed with the Watch product image.
 
+The included Apple Watch® images (`src/black.png` and `src/white.png`) are subject to the [App Store Marketing Guidelines](https://developer.apple.com/app-store/marketing/guidelines/) and the [iOS App Store Marketing Artwork License Agreement](iOS App Store Marketing Artwork License Agreement.md).
+
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
