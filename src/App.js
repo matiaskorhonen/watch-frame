@@ -4,10 +4,8 @@ import { AnchorButton, Radio, RadioGroup } from "@blueprintjs/core";
 import whiteWatch from "./white.png";
 import blackWatch from "./black.png";
 
-import "normalize.css";
 import "@blueprintjs/core/dist/blueprint.css";
 import "./App.css";
-
 
 class App extends Component {
   constructor () {
