@@ -42,34 +42,38 @@ class App extends Component {
     }
   }
 
-  drawBackground(image, src) {
+  drawBackgroundAndScreen(background) {
     const ctx = this.refs.canvas.getContext('2d');
+    ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
+    ctx.drawImage(background, 0, 0);
+    this.drawScreen();
+  }
 
-    image.onload = function() {
-      ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
-      ctx.drawImage(image, 0, 0);
-      this.drawScreen();
-    }.bind(this)
+  loadAndDrawBackground(image, src) {
+    var currentImage = this.state[image];
 
-    image.src = src;
+    if (currentImage.src) {
+      this.drawBackgroundAndScreen(currentImage)
+    } else {
+      currentImage.onload = function() {
+        this.drawBackgroundAndScreen(currentImage)
+      }.bind(this)
+      currentImage.src = src;
+
+      var newState = {};
+      newState[image] = currentImage;
+
+      this.setState(newState);
+    }
   }
 
   updateCanvas() {
-    const ctx = this.refs.canvas.getContext('2d');
-    let baseImage = new Image();
-
-    baseImage.onload = function() {
-      ctx.clearRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
-      ctx.drawImage(baseImage, 0, 0);
-      this.drawScreen();
-    }.bind(this)
-
     switch (this.state.colour) {
       case "black":
-        this.drawBackground(this.state.blackWatchImage, blackWatch)
+        this.loadAndDrawBackground("blackWatchImage", blackWatch)
         break;
       case "white":
-        this.drawBackground(this.state.whiteWatchImage, whiteWatch)
+        this.loadAndDrawBackground("whiteWatchImage", whiteWatch)
         break;
       default:
         console.error(`Unknown colour: ${this.state.colour}`)
